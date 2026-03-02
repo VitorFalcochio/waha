@@ -1,0 +1,11 @@
+.venv/
+.waha-sessions/
+logs/
+__pycache__/
+*.pyc
+
+# runtime data
+state.json
+
+# secrets
+waha.env

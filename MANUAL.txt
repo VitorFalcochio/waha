@@ -1,0 +1,101 @@
+MANUAL DE INSTALACAO - WAHA PRINT BOT (WINDOWS)
+===============================================
+
+OBJETIVO
+--------
+Instalar e deixar o bot de impressao funcionando com inicio automatico no Windows.
+
+REQUISITOS
+----------
+1. Docker Desktop instalado e em execucao.
+2. Python 3.11+ instalado (com pip).
+3. Celular com WhatsApp para pareamento.
+
+PASSO 1 - COPIAR PROJETO
+------------------------
+Copie a pasta do projeto para o computador do cliente.
+Exemplo:
+C:\Waha
+
+PASSO 2 - PREPARAR PYTHON
+-------------------------
+Abra PowerShell dentro da pasta do projeto e rode:
+
+cd C:\Waha
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install fastapi uvicorn requests pywin32
+
+PASSO 3 - CONFIGURAR ARQUIVO WAHA.ENV
+-------------------------------------
+Edite o arquivo waha.env e ajuste no minimo:
+
+WAHA_API_KEY=SEU_TOKEN_AQUI
+PRINT_MODE=ip
+PRINTER_IP=IP_DA_IMPRESSORA
+TRIGGER=#IMPRESSAO
+
+Opcional recomendado:
+WAHA_WEBHOOK_URL=http://IP_DO_PC_CLIENTE:8000/waha/webhook
+
+Se for usar impressora Windows ao inves de IP:
+PRINT_MODE=win32
+PRINTER_NAME=Nome exato da impressora
+
+PASSO 4 - INICIAR SISTEMA
+-------------------------
+No PowerShell, dentro da pasta do projeto:
+
+powershell -ExecutionPolicy Bypass -File .\run_bot_forever.ps1
+
+Esse comando sobe:
+- WAHA no Docker (porta 3000)
+- Bot Python (porta 8000)
+
+PASSO 5 - PAREAR WHATSAPP
+-------------------------
+1. Abra no navegador:
+   http://localhost:3000/dashboard
+2. Entre em Sessions > default
+3. Escaneie o QR Code com o WhatsApp do celular
+4. Confirme status da sessao: WORKING
+
+PASSO 6 - TESTAR IMPRESSAO
+--------------------------
+Envie uma mensagem para o proprio numero com o gatilho na ultima linha.
+
+Exemplo:
+PEDIDO #1001
+1x X-Burger
+1x Suco de Laranja
+Observacao: sem cebola
+#IMPRESSAO
+
+PASSO 7 - ATIVAR INICIO AUTOMATICO NO WINDOWS
+---------------------------------------------
+No PowerShell, dentro da pasta do projeto:
+
+powershell -ExecutionPolicy Bypass -File .\install_windows_startup.ps1
+
+Para remover o inicio automatico:
+powershell -ExecutionPolicy Bypass -File .\uninstall_windows_startup.ps1
+
+VALIDACAO RAPIDA
+----------------
+WAHA:
+http://localhost:3000
+
+Bot:
+http://localhost:8000/health
+Resposta esperada:
+{"ok":true}
+
+SOLUCAO DE PROBLEMAS
+--------------------
+1. WAHA nao abre na porta 3000:
+   - Verifique se Docker Desktop esta ativo.
+2. Sessao nao fica em WORKING:
+   - Refaca o pareamento no dashboard.
+3. Nao imprime:
+   - Revise PRINT_MODE, PRINTER_IP/PRINTER_NAME e TRIGGER.
+   - Garanta que #IMPRESSAO esteja na ultima linha.
