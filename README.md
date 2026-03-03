@@ -25,6 +25,62 @@ O projeto conecta WAHA + FastAPI e imprime automaticamente em impressora termica
 WhatsApp -> WAHA (Docker) -> /waha/webhook (FastAPI) -> Impressora termica
 ```
 
+## Instalar em outro PC (via GitHub)
+
+### 1) Clonar o repositorio
+
+```powershell
+cd C:\
+git clone https://github.com/VitorFalcochio/waha.git Waha
+cd C:\Waha
+```
+
+Se a pasta ja existir e voce quiser atualizar:
+
+```powershell
+cd C:\Waha
+git pull origin main
+```
+
+### 2) Preparar o Python
+
+```powershell
+cd C:\Waha
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install fastapi uvicorn requests pywin32
+```
+
+### 3) Criar e ajustar o `waha.env`
+
+```powershell
+Copy-Item .\waha.env.example .\waha.env
+notepad .\waha.env
+```
+
+Campos minimos:
+
+```env
+WAHA_API_KEY=SEU_TOKEN
+PRINT_MODE=ip
+PRINTER_IP=192.168.0.130
+TRIGGER=#IMPRESSAO
+```
+
+### 4) Subir o sistema
+
+```powershell
+cd C:\Waha
+powershell -ExecutionPolicy Bypass -File .\run_bot_forever.ps1
+```
+
+### 5) Parear e validar
+
+1. Abra `http://localhost:3000/dashboard`
+2. Va em `Sessions > default` e escaneie o QR Code
+3. Confirme status `WORKING`
+4. Valide bot em `http://localhost:8000/health` (esperado: `{"ok":true}`)
+
 ## Instalacao Rapida
 
 ### 1) Requisitos
